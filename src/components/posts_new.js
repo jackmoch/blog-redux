@@ -1,16 +1,20 @@
 import React, { Component } from 'react'
 import { reduxForm } from 'redux-form'
+import { createPost } from '../actions/index'
 
 class PostsNew extends Component {
 	render() {
 		const { fields: { title, categories, content }, handleSubmit } = this.props
 		return (
-			<form onSubmit={handleSubmit}>
+			<form onSubmit={handleSubmit(this.props.createPost)}>
 				<h3>Create A New Post</h3>
 
 				<div className="form-group">
 					<label>Title</label>
 					<input type="test" className="form-control" {...title} />
+					<div className="text-help"> 
+						{title.touched ? title.error : ''}
+					</div>
 				</div>
 
 				<div className="form-group">
@@ -30,7 +34,18 @@ class PostsNew extends Component {
 	}
 }
 
+function validate(values) {
+	const errors = {}
+
+	if (!values.title) {
+		errors.title = 'Enter a username'
+	}
+
+	return errors
+}
+
 export default reduxForm({
 	form: 'PostsNewForm',
-	fields: ['title', 'categories', 'content']
-})(PostsNew)
+	fields: ['title', 'categories', 'content'],
+	validate
+}, null, { createPost })(PostsNew)
